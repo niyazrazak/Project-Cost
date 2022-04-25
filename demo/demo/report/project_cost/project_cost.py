@@ -34,16 +34,16 @@ def execute(filters=None):
 		"""
 		select
 			`tabPurchase Invoice`.posting_date, sum(`tabPurchase Invoice Item`.`amount`) as other_expense
-		from `tabPurchase Invoice`, `tabPurchase Invoice Item`
-		where `tabPurchase Invoice`.name = `tabPurchase Invoice Item`.`parent` and
-		`tabPurchase Invoice`.docstatus = 1
-	""",as_dict=1)
+		from 
+			`tabPurchase Invoice`, `tabPurchase Invoice Item`
+		where
+			 `tabPurchase Invoice`.name = `tabPurchase Invoice Item`.`parent` and
+			`tabPurchase Invoice`.docstatus = 1 and `tabPurchase Invoice Item`.project =  %(project)s
+		GROUP BY  DATE(posting_date)
+		""" ,conditions, as_dict=1)
 	
 	for exp in other_expense:
 		data.append(exp)
-	# other_expense = frappe.db.get_all("Purchase Invoice Item", filters=conditions, fields=[
-	# 	"DATE(creation) as posting_date", 'sum(amount) as other_expense'
-	# ])
 	# frappe.msgprint(str(other_expense))
 	return columns, data
 
